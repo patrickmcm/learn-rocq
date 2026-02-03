@@ -345,17 +345,20 @@ Compute (invert bw_white).
     over [simpl] and go directly to [reflexivity]. We'll explain
     what's happening later in the chapter. *)
 
-Definition nandb (b1:bool) (b2:bool) : bool
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Definition nandb (b1:bool) (b2:bool) : bool :=
+  match b1,b2 with
+  | true, true => false
+  | _, _ => true
+  end.
 
 Example test_nandb1:               (nandb true false) = true.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 Example test_nandb2:               (nandb false false) = true.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 Example test_nandb3:               (nandb false true) = true.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 Example test_nandb4:               (nandb true true) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 (** [] *)
 
 (** **** Exercise: 1 star, standard (andb3)
@@ -364,17 +367,20 @@ Example test_nandb4:               (nandb true true) = false.
     return [true] when all of its inputs are [true], and [false]
     otherwise. *)
 
-Definition andb3 (b1:bool) (b2:bool) (b3:bool) : bool
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Definition andb3 (b1:bool) (b2:bool) (b3:bool) : bool :=
+  match b1,b2,b3 with
+  | true, true, true => true
+  | _, _, _ => false
+  end.
 
 Example test_andb31:                 (andb3 true true true) = true.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 Example test_andb32:                 (andb3 false true true) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 Example test_andb33:                 (andb3 true false true) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 Example test_andb34:                 (andb3 true true false) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 (** [] *)
 
 (* ================================================================= *)
@@ -783,6 +789,8 @@ Fixpoint mult (n m : nat) : nat :=
 
 Example test_mult1: (mult 3 3) = 9.
 Proof. simpl. reflexivity.  Qed.
+Example test_mult2: (mult 10 10) = 100.
+Proof. simpl. reflexivity. Qed.
 
 (** We can match two expressions at once by putting a comma
     between them: *)
@@ -794,9 +802,6 @@ Fixpoint minus (n m:nat) : nat :=
   | S n', S m' => minus n' m'
   end.
 
-Example test_minus: (minus 5 0) = 5.
-Proof. simpl. reflexivity.  Qed.
-
 End NatPlayground2.
 
 Fixpoint exp (base power : nat) : nat :=
@@ -804,9 +809,6 @@ Fixpoint exp (base power : nat) : nat :=
   | O => S O
   | S p => mult base (exp base p)
   end.
-
-Example test_exp: (exp 2 3) = 8.
-Proof. simpl. reflexivity.  Qed.
 
 (** **** Exercise: 1 star, standard (factorial)
 
@@ -822,13 +824,16 @@ Proof. simpl. reflexivity.  Qed.
     factorial was not found in the current environment," it means
     you've forgotten the [:=]. *)
 
-Fixpoint factorial (n:nat) : nat
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Fixpoint factorial (n:nat) : nat :=
+  match n with 
+  | O => S O
+  | S n' => mult n (factorial n')
+  end.
 
 Example test_factorial1:          (factorial 3) = 6.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 Example test_factorial2:          (factorial 5) = (mult 10 12).
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 (** [] *)
 
 (** Again, we can make numerical expressions easier to read and write
@@ -923,17 +928,20 @@ Proof. simpl. reflexivity.  Qed.
     function.  It can be done with just one previously defined
     function, but you can use two if you want. *)
 
-Definition ltb (n m : nat) : bool
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Definition ltb (n m : nat) : bool :=
+  match n,m with
+  | O, O => false
+  | S _, O => false
+  | _ , S m' => leb n m'
+  end.
 
 Notation "x <? y" := (ltb x y) (at level 70) : nat_scope.
-
 Example test_ltb1:             (ltb 2 2) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 Example test_ltb2:             (ltb 2 4) = true.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 Example test_ltb3:             (ltb 4 2) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 (** [] *)
 
 (* ################################################################# *)
@@ -961,10 +969,7 @@ Proof. simpl. reflexivity. Qed.
 
 Theorem plus_O_n : forall n : nat, 0 + n = n.
 Proof.
-intros n. 
-simpl. 
-reflexivity. 
-Qed.
+  intros n. simpl. reflexivity.  Qed.
 
 (** (You may notice that the above statement looks different if
     you look at the [.v] file in your IDE than it does if you view the
@@ -1030,9 +1035,7 @@ Proof.
 
 Theorem plus_1_l : forall n:nat, 1 + n = S n.
 Proof.
-  intros n.
-  reflexivity. 
-Qed.
+  intros n. reflexivity.  Qed.
 
 Theorem mult_0_l : forall n:nat, 0 * n = 0.
 Proof.
@@ -1102,7 +1105,12 @@ Proof.
 Theorem plus_id_exercise : forall n m o : nat,
   n = m -> m = o -> n + m = m + o.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros n m o.
+  intros H_1 H_2.
+  rewrite H_1.
+  rewrite H_2.
+  reflexivity. 
+Qed.
 (** [] *)
 
 (** The [Admitted] command tells Rocq that we want to skip trying
@@ -1153,8 +1161,10 @@ Proof.
 Theorem mult_n_1 : forall p : nat,
   p * 1 = p.
 Proof.
-  (* FILL IN HERE *) Admitted.
-
+  intros p.
+  rewrite <- mult_n_Sm.
+  rewrite <- mult_n_O.
+reflexivity. Qed.
 (** [] *)
 
 (* ################################################################# *)
@@ -1359,20 +1369,18 @@ Qed.
 Theorem andb_true_elim2 : forall b c : bool,
   andb b c = true -> c = true.
 Proof.
-  intros b c.
-  intros H.
+  intros b c. intros H.
   destruct b eqn:Eb.
   - destruct c eqn:Ec.
     + reflexivity.
-    + rewrite <- H.
-    reflexivity.
+    + rewrite <- H. 
+      reflexivity.
   - destruct c eqn:Ec.
     + reflexivity.
     + rewrite <- H.
-    reflexivity.
+      reflexivity.
 Qed.
-
-(** [] *)
+  (** [] *)
 
 (** Before closing the chapter, we should mention one final
     convenience.  As you may have noticed, many proofs perform case
@@ -1412,7 +1420,10 @@ Qed.
 Theorem zero_nbeq_plus_1 : forall n : nat,
   0 =? (n + 1) = false.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros [|n].
+  - reflexivity.
+  - reflexivity.
+Qed.
 (** [] *)
 
 (* ================================================================= *)
