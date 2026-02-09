@@ -259,14 +259,20 @@ Qed.
 Theorem add_comm : forall n m : nat,
   n + m = m + n.
 Proof.
-Admitted. 
-    
+intros n m. induction n as [| n' IHn'].
+  - rewrite add_0_r. reflexivity.
+  - simpl. rewrite IHn'. rewrite plus_n_Sm. reflexivity. 
+Qed.
     
 
 Theorem add_assoc : forall n m p : nat,
   n + (m + p) = (n + m) + p.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros n m p. induction n as [| n' IHn'].
+  - reflexivity.
+  - simpl. rewrite IHn'. reflexivity.
+Qed.
+
 (** [] *)
 
 (** **** Exercise: 2 stars, standard (double_plus)
