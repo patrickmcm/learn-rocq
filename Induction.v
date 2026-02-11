@@ -289,7 +289,10 @@ Fixpoint double (n:nat) :=
 
 Lemma double_plus : forall n, double n = n + n .
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros n. induction n as [| n' IHn'].
+  - reflexivity.
+  - simpl. rewrite IHn'. rewrite <- plus_n_Sm. reflexivity.
+Qed.
 (** [] *)
 
 (** **** Exercise: 2 stars, standard (eqb_refl)
@@ -300,7 +303,11 @@ Proof.
 Theorem eqb_refl : forall n : nat,
   (n =? n) = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  induction n as [| n' IHn'].
+  - reflexivity.
+  - simpl. rewrite IHn'. reflexivity.
+Qed.
+
 (** [] *)
 
 (** **** Exercise: 2 stars, standard, optional (even_S)
@@ -315,7 +322,11 @@ Proof.
 Theorem even_S : forall n : nat,
   even (S n) = negb (even n).
 Proof.
-  (* FILL IN HERE *) Admitted.
+  induction n as [| n' IHn'].
+    - reflexivity.
+    - rewrite IHn'. simpl. rewrite negation_fn_applied_twice. reflexivity.
+    reflexivity. 
+Qed.
 (** [] *)
 
 (* ################################################################# *)
@@ -500,9 +511,29 @@ Proof.
 
     Translate your solution for [add_comm] into an informal proof:
 
-    Theorem: Addition is commutative.
+    Theorem add_comm : forall n m : nat,
+      n + m = m + n.
+    Proof.
+    intros n m. induction n as [| n' IHn'].
+      - rewrite add_0_r. reflexivity.
+      - simpl. rewrite IHn'. rewrite plus_n_Sm. reflexivity. 
+    Qed.
 
-    Proof: (* FILL IN HERE *)
+    Theorem: For any natural numbers n and m, addition is commutative.
+
+    Proof: 
+    
+    First suppose n = 0, then
+      0 + m = m + 0 
+    By defintion of +, 0 + m = m
+      m = m + 0
+    We previously proved m + 0 = m hence,
+      m = m
+    Now consider n = S n' 
+      S n' + m = m + S n'
+    From the definition of +,
+      S (n' + m) = S (m + n')
+    Qed.
 *)
 
 (* Do not modify the following line: *)
@@ -535,16 +566,32 @@ Definition manual_grade_for_eqb_refl_informal : option (nat*string) := None.
 Theorem add_shuffle3 : forall n m p : nat,
   n + (m + p) = m + (n + p).
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros n m p. rewrite add_assoc. rewrite add_assoc. replace (m + n) with (n + m).
+  - reflexivity.
+  - rewrite add_comm. reflexivity.
+Qed. 
 
 (** Now prove commutativity of multiplication.  You will probably want
     to look for (or define and prove) a "helper" theorem to be used in
     the proof of this one. Hint: what is [n * (1 + k)]? *)
+Theorem mul_comm_help : forall n k : nat,
+  n * (1 + k) = n + n * k.
+Proof.
+  intros n k. induction n as [| n' IHn'].
+  - reflexivity.
+  - simpl in IHn'. simpl. rewrite IHn'. rewrite add_shuffle3. reflexivity.
+Qed.
 
 Theorem mul_comm : forall m n : nat,
   m * n = n * m.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros m n. induction n as [| n' IHn'].
+  - rewrite mul_0_r. reflexivity.
+  - simpl. destruct n' eqn:En'.
+    + simpl. rewrite mult_n_1. rewrite add_0_r. reflexivity.
+    + rewrite <- IHn'.  rewrite mul_comm_help. reflexivity.
+Qed.
+
 (** [] *)
 
 (** **** Exercise: 3 stars, standard, optional (more_exercises)
