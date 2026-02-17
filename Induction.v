@@ -726,15 +726,26 @@ Fixpoint bin_to_nat (m:bin) : nat :=
 
     If you want to change your previous definitions of [incr] or [bin_to_nat]
     to make the property easier to prove, feel free to do so! *)
+Theorem succ_help: forall n : nat,
+   n + S n =  S ( n+n ).
+Proof. 
+  induction n.
+  - reflexivity.
+  - simpl. rewrite add_comm. simpl. rewrite IHn. reflexivity.
+Qed.
 
 Theorem bin_to_nat_pres_incr : forall b : bin,
   bin_to_nat (incr b) = 1 + bin_to_nat b.
 Proof.
-  intros. simpl. destruct b.
+  intros. simpl. induction b.
   - reflexivity.
   - reflexivity.
   - simpl. rewrite add_assoc. rewrite add_comm. simpl. replace (bin_to_nat b + 0) with (bin_to_nat b). 
-    + 
+    + rewrite IHb. simpl. rewrite succ_help. reflexivity.
+    + rewrite add_comm. reflexivity.
+Qed.
+
+
 (** [] *)
 
 (** **** Exercise: 3 stars, standard (nat_bin_nat) *)
@@ -742,7 +753,9 @@ Proof.
 (** Write a function to convert natural numbers to binary numbers. *)
 
 Fixpoint nat_to_bin (n:nat) : bin
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+  match n with 
+  | 0 => Z
+  | S n' => 
 
 (** Prove that, if we start with any [nat], convert it to [bin], and
     convert it back, we get the same [nat] which we started with.
