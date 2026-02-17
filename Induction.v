@@ -604,29 +604,42 @@ Qed.
     to turn in your piece of paper; this is just to encourage you to
     reflect before you hack!) *)
 
+(*  case analysis  *)
 Theorem leb_refl : forall n:nat,
   (n <=? n) = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros. induction n.
+  - reflexivity.
+  - apply IHn.
+Qed.
 
+(* simplication *)
 Theorem zero_neqb_S : forall n:nat,
   0 =? (S n) = false.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  reflexivity.
+Qed.
 
+(*  case analysis *)
 Theorem andb_false_r : forall b : bool,
   andb b false = false.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros. destruct b eqn:Eb.
+  - reflexivity.
+  - reflexivity.
+Qed.
 
+(* case anlysis *)
 Theorem S_neqb_0 : forall n:nat,
   (S n) =? 0 = false.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  reflexivity.
+Qed.
 
 Theorem mult_1_l : forall n:nat, 1 * n = n.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros. simpl. rewrite add_comm. reflexivity.
+Qed.
 
 Theorem all3_spec : forall b c : bool,
   orb
@@ -635,17 +648,31 @@ Theorem all3_spec : forall b c : bool,
          (negb c))
   = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
-
+  intros. destruct b.
+  - destruct c.
+    + reflexivity.
+    + reflexivity.
+  - destruct c.
+    + reflexivity.
+    + reflexivity.
+Qed.
+  
 Theorem mult_plus_distr_r : forall n m p : nat,
   (n + m) * p = (n * p) + (m * p).
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros. induction n.
+  - reflexivity.
+  - intros. simpl. rewrite IHn. rewrite add_assoc. reflexivity.
+Qed.
 
 Theorem mult_assoc : forall n m p : nat,
   n * (m * p) = (n * m) * p.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros. induction n.
+  - reflexivity.
+  - simpl. rewrite mult_plus_distr_r. rewrite IHn. reflexivity.
+Qed.
+  
 (** [] *)
 
 (* ################################################################# *)
