@@ -690,11 +690,19 @@ Inductive bin : Type :=
     from [Basics].  That will make it possible for this file to
     be graded on its own. *)
 
-Fixpoint incr (m:bin) : bin
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Fixpoint incr (m:bin) : bin :=
+ match m with 
+ | Z => B1 Z 
+ | B0 m' => B1 m' 
+ | B1 m' => B0 (incr m')
+ end.
 
-Fixpoint bin_to_nat (m:bin) : nat
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Fixpoint bin_to_nat (m:bin) : nat := 
+  match m with 
+  | Z => O
+  | B0 m' => 2 * (bin_to_nat m') 
+  | B1 m' => 1 + 2 * (bin_to_nat m')
+  end.
 
 (** In [Basics], we did some unit testing of [bin_to_nat], but we
     didn't prove its correctness. Now we'll do so. *)
@@ -722,8 +730,11 @@ Fixpoint bin_to_nat (m:bin) : nat
 Theorem bin_to_nat_pres_incr : forall b : bin,
   bin_to_nat (incr b) = 1 + bin_to_nat b.
 Proof.
-  (* FILL IN HERE *) Admitted.
-
+  intros. simpl. destruct b.
+  - reflexivity.
+  - reflexivity.
+  - simpl. rewrite add_assoc. rewrite add_comm. simpl. replace (bin_to_nat b + 0) with (bin_to_nat b). 
+    + 
 (** [] *)
 
 (** **** Exercise: 3 stars, standard (nat_bin_nat) *)
@@ -737,7 +748,7 @@ Fixpoint nat_to_bin (n:nat) : bin
     convert it back, we get the same [nat] which we started with.
 
     Hint: This proof should go through smoothly using the previous
-    exercise about [incr] as a lemma. If not, revisit your definitions
+    exercise about [inc] as a lemma. If not, revisit your definitions
     of the functions involved and consider whether they are more
     complicated than necessary: the shape of a proof by induction will
     match the recursive structure of the program being verified, so

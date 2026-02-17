@@ -2059,17 +2059,14 @@ Inductive bin : Type :=
 
 Fixpoint incr (m:bin) : bin :=
  match m with 
-  | Z => B1 Z 
-  | B1 Z => B0 (B1 Z)
-  | B0 (B1 Z) => B1 (B1 Z) 
-  | B1 m' => B0 (incr m')
-  | B0 m' => B1 (incr m')
-  end.
+ | Z => B1 Z 
+ | B0 m' => B1 m' 
+ | B1 m' => B0 (incr m')
+ end.
 
 Fixpoint bin_to_nat (m:bin) : nat := 
   match m with 
   | Z => O
-  | B1 Z => 1
   | B0 m' => 2 * (bin_to_nat m') 
   | B1 m' => 1 + 2 * (bin_to_nat m')
   end.
