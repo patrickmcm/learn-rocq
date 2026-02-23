@@ -863,7 +863,7 @@ Fixpoint normalize (b:bin) : bin :=
  match b with 
  | Z => Z
  | B0 b' => double_bin (normalize b') 
- | B1 _ => b
+ | B1 b' => B1 (normalize b')
  end.
  
 (** It would be wise to do some [Example] proofs to check that your definition of
@@ -876,9 +876,11 @@ Proof. reflexivity. Qed.
 
 Example B0_Z_eq_3Z : normalize (B0 (B0 (B0 Z))) = Z.
 Proof. reflexivity. Qed.
-
 Example B0_Z_eq_2 : normalize (B1 Z) = B1 Z.
 Proof. reflexivity. Qed.
+
+Example B0_B0_B1_Z_eq : normalize(B1 (B0 (B0 Z))) = B1 Z.
+Proof. auto. Qed.
 
 (** Finally, prove the main theorem. The inductive cases could be a
     bit tricky.
@@ -888,12 +890,36 @@ Proof. reflexivity. Qed.
     its own inductive proof -- that will allow the main proof to make
     progress. We have one lemma for the [B0] case (which also makes
     use of [double_incr_bin]) and another for the [B1] case. *)
+Lemma nat_double_bin_double: forall n, nat_to_bin (double n) = double_bin (nat_to_bin n).
+Proof.
+  induction n. 
+  - reflexivity.
+  - simpl. rewrite double_incr_bin. rewrite IHn. reflexivity.
+Qed.
+
+Lemma incr_double: forall b, incr ( double_bin b ) = B1 b.
+Proof. 
+  destruct b; auto.
+Qed.
+
 Theorem bin_nat_bin : forall b, nat_to_bin (bin_to_nat b) = normalize b.
 Proof.
  induction b.
  - reflexivity.
- - simpl. rewrite <- IHb. rewrite add_assoc. rewrite add_comm. simpl. rewrite <- double_plus. 
-
+ - simpl. 
+   rewrite <- IHb. 
+   rewrite <- nat_double_bin_double. 
+   rewrite add_comm. 
+   rewrite add_0_r. 
+   rewrite <- double_plus. 
+   reflexivity.
+ - simpl. rewrite <- plus_n_O.
+   rewrite <- double_plus.
+   rewrite nat_double_bin_double.
+   rewrite <- incr_double.
+   rewrite IHb.
+   reflexivity.
+Qed.
 (** [] *)
 
 (* 2026-01-07 13:17 *)
