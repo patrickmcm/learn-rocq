@@ -1256,18 +1256,18 @@ Proof. reflexivity. Qed.
     Hint: the "zero" argument to a Church numeral need not be just
     [x]. *)
 
-Definition plus (n m : cnat) : cnat := fun (X : Type) (f : X -> X) (x: X) => m (n X f x). 
+Definition plus (n m : cnat) : cnat := fun (X : Type) (f : X -> X) (x: X) => n X f (m X f x). 
 
 
 Example plus_1 : plus zero one = one.
-Proof. (* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed. 
 
 Example plus_2 : plus two three = plus three two.
-Proof. (* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed. 
 
 Example plus_3 :
   plus (plus two two) three = plus one (plus three three).
-Proof. (* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed. 
 
 (** [] *)
 
@@ -1285,17 +1285,16 @@ Proof. (* FILL IN HERE *) Admitted.
     which a type contains itself. So leave the type argument
     unchanged. *)
 
-Definition mult (n m : cnat) : cnat
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Definition mult (n m : cnat) : cnat := fun (X : Type) (f : X -> X) (x: X) => n X (fun i => m X f i) x.
 
 Example mult_1 : mult one one = one.
-Proof. (* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed.
 
 Example mult_2 : mult zero (plus three three) = zero.
-Proof. (* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed.
 
 Example mult_3 : mult two three = plus three three.
-Proof. (* FILL IN HERE *) Admitted.
+Proof. reflexivity. Qed.
 
 (** [] *)
 
